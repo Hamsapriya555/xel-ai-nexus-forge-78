@@ -125,7 +125,7 @@ const Community = () => {
     {
       id: '3',
       title: 'Story Time: AI Bedtime Stories',
-      description: 'A platform that creates personalized children's stories using Xel's language capabilities.',
+      description: "A platform that creates personalized children's stories using Xel's language capabilities.",
       creator: {
         name: 'Leila Rodriguez',
         avatar: 'https://randomuser.me/api/portraits/women/63.jpg'
