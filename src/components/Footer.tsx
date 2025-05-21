@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Twitter, Github, Discord } from 'lucide-react';
+import { Twitter, Github } from 'lucide-react';
+import { Discord } from '@/components/icons/Discord';
 
 const Footer = () => {
   return (
