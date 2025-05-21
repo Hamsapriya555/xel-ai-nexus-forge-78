@@ -1,15 +1,23 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, MessageSquare, Users, Zap, Brain, Code, Shield } from 'lucide-react';
 import Button from '@/components/Button';
 import AnimatedText from '@/components/AnimatedText';
+import { staggeredDelay } from '@/lib/utils';
 
 const Home = () => {
+  const [isLoaded, setIsLoaded] = useState(false);
   const featureCardsRef = useRef<HTMLDivElement>(null);
   const testimonialRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const whatIsRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
+    // Set loaded state after initial render
+    setIsLoaded(true);
+    
     const observerOptions = {
       root: null,
       rootMargin: '0px',
@@ -20,6 +28,8 @@ const Home = () => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('animate-fade-in');
+          entry.target.classList.remove('opacity-0');
+          entry.target.classList.remove('translate-y-10');
         }
       });
     };
@@ -92,28 +102,63 @@ const Home = () => {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6 relative overflow-hidden">
+      <section 
+        ref={heroRef}
+        className={`pt-32 pb-20 px-6 relative overflow-hidden transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+      >
         <div className="absolute inset-0 grid-background opacity-40 z-0"></div>
         
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="flex flex-col items-center text-center">
-            <div className="mb-6 inline-block relative">
+            <div 
+              className="mb-6 inline-block relative transition-all duration-700 ease-out transform"
+              style={{ 
+                transitionDelay: '0.2s',
+                opacity: isLoaded ? 1 : 0,
+                transform: isLoaded ? 'translateY(0)' : 'translateY(20px)'
+              }}
+            >
               <span className="px-4 py-1 bg-primary/10 border border-primary/20 rounded-full text-sm font-medium text-primary">
                 Now in public beta
               </span>
             </div>
             
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-space-grotesk font-bold mb-6 leading-tight">
-              <span className="text-gradient">Borrow intelligence.</span><br />
-              <span>Build ideas. Welcome to Xel.</span>
-            </h1>
+            <div 
+              className="transition-all duration-700 ease-out transform mb-6"
+              style={{ 
+                transitionDelay: '0.4s',
+                opacity: isLoaded ? 1 : 0,
+                transform: isLoaded ? 'translateY(0)' : 'translateY(20px)'
+              }}
+            >
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-space-grotesk font-bold leading-tight">
+                <span className="text-gradient">Borrow intelligence.</span><br />
+                <span>Build ideas. Welcome to Xel.</span>
+              </h1>
+            </div>
             
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mb-10">
-              Access cutting-edge language models, engage in natural conversations,
-              and join a community of creators pushing the boundaries of AI.
-            </p>
+            <div 
+              className="transition-all duration-700 ease-out transform mb-10"
+              style={{ 
+                transitionDelay: '0.6s',
+                opacity: isLoaded ? 1 : 0,
+                transform: isLoaded ? 'translateY(0)' : 'translateY(20px)'
+              }}
+            >
+              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
+                Access cutting-edge language models, engage in natural conversations,
+                and join a community of creators pushing the boundaries of AI.
+              </p>
+            </div>
             
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div 
+              className="flex flex-col sm:flex-row gap-4 transition-all duration-700 ease-out transform"
+              style={{ 
+                transitionDelay: '0.8s',
+                opacity: isLoaded ? 1 : 0,
+                transform: isLoaded ? 'translateY(0)' : 'translateY(20px)'
+              }}
+            >
               <Link to="/chat">
                 <Button variant="glow" size="lg" className="group">
                   Start chatting now
@@ -128,8 +173,15 @@ const Home = () => {
             </div>
           </div>
           
-          <div className="mt-20 relative">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-secondary rounded-xl blur-sm opacity-30"></div>
+          <div 
+            className="mt-20 relative transition-all duration-1000 ease-out transform"
+            style={{ 
+              transitionDelay: '1s',
+              opacity: isLoaded ? 1 : 0,
+              transform: isLoaded ? 'translateY(0) scale(1)' : 'translateY(40px) scale(0.98)'
+            }}
+          >
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-secondary rounded-xl blur-sm opacity-30 animate-pulse-glow"></div>
             <div className="relative bg-card/90 border border-border rounded-xl overflow-hidden shadow-2xl">
               <div className="h-[400px] md:h-[500px] bg-xel-dark flex items-center justify-center">
                 <div className="text-center">
@@ -143,10 +195,10 @@ const Home = () => {
       </section>
 
       {/* What is fake_by_Xel section */}
-      <section className="py-20 px-6 relative">
+      <section ref={whatIsRef} className="py-20 px-6 relative">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="animate-on-scroll opacity-0">
+            <div className="animate-on-scroll opacity-0 translate-y-10 transition-all duration-700">
               <h2 className="text-3xl md:text-4xl font-space-grotesk font-bold mb-6">
                 What is <span className="text-gradient">fake_by_Xel</span>?
               </h2>
@@ -168,7 +220,7 @@ const Home = () => {
                 </Link>
               </div>
             </div>
-            <div className="relative animate-on-scroll opacity-0">
+            <div className="relative animate-on-scroll opacity-0 translate-y-10 transition-all duration-700" style={{ transitionDelay: '0.2s' }}>
               <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/60 to-secondary/60 rounded-xl blur-md opacity-30"></div>
               <div className="bg-card rounded-xl p-8 relative border border-border">
                 <div className="space-y-4">
@@ -210,7 +262,7 @@ const Home = () => {
       {/* Features Section */}
       <section className="py-20 px-6 bg-card/30">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700">
             <h2 className="text-3xl md:text-4xl font-space-grotesk font-bold mb-6">
               Why Borrow an <span className="text-gradient">LLM</span>?
             </h2>
@@ -227,8 +279,11 @@ const Home = () => {
             {features.map((feature, index) => (
               <div 
                 key={index} 
-                className="bg-muted/20 border border-border rounded-xl p-6 transition-all hover:shadow-glow-sm animate-on-scroll opacity-0"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="bg-muted/20 border border-border rounded-xl p-6 transition-all hover:shadow-glow-sm animate-on-scroll opacity-0 translate-y-10"
+                style={{ 
+                  transitionDelay: staggeredDelay(index),
+                  transitionDuration: '700ms',
+                }}
               >
                 <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   {feature.icon}
@@ -247,7 +302,7 @@ const Home = () => {
         className="py-20 px-6"
       >
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700">
             <h2 className="text-3xl md:text-4xl font-space-grotesk font-bold mb-6">
               What Our <span className="text-gradient">Community</span> Says
             </h2>
@@ -260,8 +315,11 @@ const Home = () => {
             {testimonials.map((testimonial, index) => (
               <div 
                 key={index} 
-                className="bg-card border border-border rounded-xl p-6 animate-on-scroll opacity-0"
-                style={{ animationDelay: `${index * 0.2}s` }}
+                className="bg-card border border-border rounded-xl p-6 animate-on-scroll opacity-0 translate-y-10 transition-all"
+                style={{ 
+                  transitionDelay: staggeredDelay(index),
+                  transitionDuration: '700ms'
+                }}
               >
                 <div className="mb-4 text-primary">
                   {Array(5).fill(0).map((_, i) => (
@@ -289,9 +347,9 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6 relative">
+      <section ref={ctaRef} className="py-20 px-6 relative">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 opacity-30"></div>
-        <div className="max-w-4xl mx-auto text-center relative z-10">
+        <div className="max-w-4xl mx-auto text-center relative z-10 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700">
           <h2 className="text-3xl md:text-4xl font-space-grotesk font-bold mb-6">
             Join Our <span className="text-gradient">Community</span> Today
           </h2>

@@ -8,6 +8,7 @@ interface AnimatedTextProps {
   element?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span';
   gradient?: boolean;
   delay?: number;
+  duration?: number;
 }
 
 const AnimatedText: React.FC<AnimatedTextProps> = ({
@@ -16,6 +17,7 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
   element = 'h1',
   gradient = false,
   delay = 0,
+  duration = 0.5,
 }) => {
   const words = text.split(' ');
   
@@ -49,6 +51,7 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
               style={{
                 animationDelay: `${getDelay(wordIndex + charIndex * 0.03)}s`,
                 animationFillMode: 'forwards',
+                animationDuration: `${duration}s`,
               }}
             >
               {char}
