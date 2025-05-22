@@ -4,11 +4,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import Button from '@/components/Button';
 import InputField from '@/components/InputField';
-import { auth } from '@/lib/api';
 import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
+  
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -55,13 +57,11 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      // Call dummy login API
-      const user = await auth.login(formData.email, formData.password);
-      console.log('User logged in:', user);
+      await login(formData.email, formData.password);
       toast.success('Login successful!');
       
-      // Redirect to chat page after successful login
-      navigate('/chat');
+      // Redirect to home page after successful login
+      navigate('/');
     } catch (error) {
       console.error('Login failed:', error);
       toast.error('Login failed. Please try again.');

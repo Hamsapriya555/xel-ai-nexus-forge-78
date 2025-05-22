@@ -4,23 +4,27 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import Button from '@/components/Button';
 import InputField from '@/components/InputField';
-import { auth } from '@/lib/api';
 import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Signup = () => {
   const navigate = useNavigate();
+  const { signup } = useAuth();
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
+  
   const [errors, setErrors] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
+  
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,9 +36,14 @@ const Signup = () => {
 
   const validateForm = () => {
     let isValid = true;
-    const newErrors = { name: '', email: '', password: '', confirmPassword: '' };
+    const newErrors = {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: ''
+    };
 
-    if (!formData.name.trim()) {
+    if (!formData.name) {
       newErrors.name = 'Name is required';
       isValid = false;
     }
@@ -50,12 +59,15 @@ const Signup = () => {
     if (!formData.password) {
       newErrors.password = 'Password is required';
       isValid = false;
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
       isValid = false;
     }
 
-    if (formData.password !== formData.confirmPassword) {
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Please confirm your password';
+      isValid = false;
+    } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
       isValid = false;
     }
@@ -72,13 +84,11 @@ const Signup = () => {
     setIsLoading(true);
     
     try {
-      // Call dummy signup API
-      const user = await auth.signup(formData.email, formData.password, formData.name);
-      console.log('User signed up:', user);
+      await signup(formData.email, formData.password, formData.name);
       toast.success('Account created successfully!');
       
-      // Redirect to chat page after successful signup
-      navigate('/chat');
+      // Redirect to home page after successful signup
+      navigate('/');
     } catch (error) {
       console.error('Signup failed:', error);
       toast.error('Signup failed. Please try again.');

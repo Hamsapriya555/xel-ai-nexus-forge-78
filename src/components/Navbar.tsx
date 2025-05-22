@@ -1,13 +1,17 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, LogOut, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,6 +21,17 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success('Logged out successfully');
+      navigate('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      toast.error('Failed to log out');
+    }
+  };
 
   const NavLinks = [
     { title: "Home", path: "/" },
@@ -60,18 +75,35 @@ const Navbar = () => {
             ))}
           </div>
           <div className="flex space-x-4">
-            <Link 
-              to="/login" 
-              className="px-4 py-1 rounded-md text-sm font-medium border border-primary/30 text-primary hover:bg-primary/10 transition-all"
-            >
-              Login
-            </Link>
-            <Link 
-              to="/signup" 
-              className="btn-glow px-4 py-1 rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-all"
-            >
-              Sign up
-            </Link>
+            {user ? (
+              <div className="flex items-center space-x-4">
+                <div className="text-sm font-medium text-foreground/80">
+                  Welcome, {user.name}
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center px-4 py-1 rounded-md text-sm font-medium border border-primary/30 text-primary hover:bg-primary/10 transition-all"
+                >
+                  <LogOut size={16} className="mr-1" />
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <>
+                <Link 
+                  to="/login" 
+                  className="px-4 py-1 rounded-md text-sm font-medium border border-primary/30 text-primary hover:bg-primary/10 transition-all"
+                >
+                  Login
+                </Link>
+                <Link 
+                  to="/signup" 
+                  className="btn-glow px-4 py-1 rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-all"
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
           </div>
         </div>
 
@@ -105,22 +137,42 @@ const Navbar = () => {
               {link.title}
             </Link>
           ))}
-          <div className="flex flex-col space-y-4 pt-4">
-            <Link 
-              to="/login" 
-              className="w-full py-3 rounded-md font-medium border border-primary/30 text-center text-primary"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Login
-            </Link>
-            <Link 
-              to="/signup" 
-              className="w-full py-3 rounded-md font-medium bg-primary text-center text-primary-foreground"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Sign up
-            </Link>
-          </div>
+          
+          {user ? (
+            <>
+              <div className="flex items-center py-2 border-b border-border">
+                <User size={20} className="mr-2 text-primary" />
+                <span className="text-lg font-medium">{user.name}</span>
+              </div>
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full py-3 rounded-md font-medium border border-primary/30 text-center text-primary flex items-center justify-center"
+              >
+                <LogOut size={18} className="mr-2" />
+                Logout
+              </button>
+            </>
+          ) : (
+            <div className="flex flex-col space-y-4 pt-4">
+              <Link 
+                to="/login" 
+                className="w-full py-3 rounded-md font-medium border border-primary/30 text-center text-primary"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Login
+              </Link>
+              <Link 
+                to="/signup" 
+                className="w-full py-3 rounded-md font-medium bg-primary text-center text-primary-foreground"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Sign up
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </nav>

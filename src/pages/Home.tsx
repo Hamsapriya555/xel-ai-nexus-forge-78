@@ -1,12 +1,13 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, MessageSquare, Users, Zap, Brain, Code, Shield } from 'lucide-react';
 import Button from '@/components/Button';
 import AnimatedText from '@/components/AnimatedText';
 import { staggeredDelay } from '@/lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Home = () => {
+  const { user } = useAuth();
   const [isLoaded, setIsLoaded] = useState(false);
   const featureCardsRef = useRef<HTMLDivElement>(null);
   const testimonialRef = useRef<HTMLDivElement>(null);
@@ -133,7 +134,7 @@ const Home = () => {
             >
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-space-grotesk font-bold leading-tight">
                 <span className="text-gradient">Borrow intelligence.</span><br />
-                <span>Build ideas. Welcome to Xel.</span>
+                <span>{user ? `Welcome back, ${user.name}` : 'Build ideas. Welcome to Xel.'}</span>
               </h1>
             </div>
             
@@ -146,8 +147,9 @@ const Home = () => {
               }}
             >
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
-                Access cutting-edge language models, engage in natural conversations,
-                and join a community of creators pushing the boundaries of AI.
+                {user 
+                  ? "Continue your conversation where you left off or start a new chat." 
+                  : "Access cutting-edge language models, engage in natural conversations, and join a community of creators pushing the boundaries of AI."}
               </p>
             </div>
             
@@ -161,13 +163,13 @@ const Home = () => {
             >
               <Link to="/chat">
                 <Button variant="glow" size="lg" className="group">
-                  Start chatting now
+                  {user ? "Continue chatting" : "Start chatting now"}
                   <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={18} />
                 </Button>
               </Link>
-              <Link to="/community">
+              <Link to={user ? "/community" : "/signup"}>
                 <Button variant="outline" size="lg">
-                  Join community
+                  {user ? "Explore community" : "Join community"}
                 </Button>
               </Link>
             </div>
@@ -346,31 +348,33 @@ const Home = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section ref={ctaRef} className="py-20 px-6 relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 opacity-30"></div>
-        <div className="max-w-4xl mx-auto text-center relative z-10 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700">
-          <h2 className="text-3xl md:text-4xl font-space-grotesk font-bold mb-6">
-            Join Our <span className="text-gradient">Community</span> Today
-          </h2>
-          <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
-            Connect with like-minded creators, developers, and thinkers who are
-            exploring the frontiers of AI-assisted creation.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/signup">
-              <Button variant="glow" size="lg">
-                Sign up for free
-              </Button>
-            </Link>
-            <Link to="/community">
-              <Button variant="outline" size="lg">
-                Explore community
-              </Button>
-            </Link>
+      {/* CTA Section - Only show if not logged in */}
+      {!user && (
+        <section ref={ctaRef} className="py-20 px-6 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 opacity-30"></div>
+          <div className="max-w-4xl mx-auto text-center relative z-10 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700">
+            <h2 className="text-3xl md:text-4xl font-space-grotesk font-bold mb-6">
+              Join Our <span className="text-gradient">Community</span> Today
+            </h2>
+            <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
+              Connect with like-minded creators, developers, and thinkers who are
+              exploring the frontiers of AI-assisted creation.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/signup">
+                <Button variant="glow" size="lg">
+                  Sign up for free
+                </Button>
+              </Link>
+              <Link to="/community">
+                <Button variant="outline" size="lg">
+                  Explore community
+                </Button>
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 };
