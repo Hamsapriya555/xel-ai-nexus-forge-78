@@ -87,10 +87,23 @@ export function useChat() {
       // Get AI response
       const aiResponse = await chatApi.getAIResponse(activeChat.id, tempUserMessage.content);
       
-      // Replace temporary message with real messages
+      // Filter out temporary message and avoid duplicates by using message IDs
+      const currentMessages = activeChat.messages.filter(m => !m.id.startsWith('temp-'));
+      const messageIds = new Set(currentMessages.map(m => m.id));
+      
+      // Only add messages that aren't already in the list
+      const updatedMessages = [...currentMessages];
+      if (!messageIds.has(userMessage.id)) {
+        updatedMessages.push(userMessage);
+      }
+      if (!messageIds.has(aiResponse.id)) {
+        updatedMessages.push(aiResponse);
+      }
+      
+      // Create final updated chat
       const finalChat = {
         ...activeChat,
-        messages: [...activeChat.messages.filter(m => !m.id.startsWith('temp-')), userMessage, aiResponse],
+        messages: updatedMessages,
         lastUpdated: new Date(),
       };
       

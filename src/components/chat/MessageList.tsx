@@ -9,11 +9,20 @@ interface MessageListProps {
 }
 
 const MessageList: React.FC<MessageListProps> = ({ messages, isTyping }) => {
+  // Add a function to filter out duplicate messages based on id
+  const uniqueMessages = messages.reduce((acc: Message[], current) => {
+    const isDuplicate = acc.find((item) => item.id === current.id);
+    if (!isDuplicate) {
+      return [...acc, current];
+    }
+    return acc;
+  }, []);
+
   return (
     <div className="flex-1 overflow-y-auto p-4 pb-32">
-      {messages.map((message, index) => (
+      {uniqueMessages.map((message) => (
         <div 
-          key={`${message.id}-${index}`}
+          key={message.id}
           className={`mb-8 ${message.role === 'user' ? 'ml-auto' : ''}`}
         >
           <div className="flex items-start">
