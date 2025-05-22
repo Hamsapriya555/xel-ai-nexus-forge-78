@@ -57,13 +57,18 @@ export function useChat() {
     if (!inputValue.trim() || !activeChat) return;
 
     try {
-      // Send user message
-      const userMessage = await chatApi.sendMessage(activeChat.id, inputValue.trim());
+      // Create a temporary user message for immediate display
+      const tempUserMessage: Message = {
+        id: `temp-${Date.now()}`,
+        role: 'user',
+        content: inputValue.trim(),
+        timestamp: new Date(),
+      };
       
       // Update UI with user message
       const updatedActiveChat = {
         ...activeChat,
-        messages: [...activeChat.messages, userMessage],
+        messages: [...activeChat.messages, tempUserMessage],
         lastUpdated: new Date(),
       };
       
@@ -76,13 +81,16 @@ export function useChat() {
       setInputValue('');
       setIsTyping(true);
 
-      // Get AI response
-      const aiResponse = await chatApi.getAIResponse(activeChat.id, inputValue);
+      // Send user message to API
+      const userMessage = await chatApi.sendMessage(activeChat.id, tempUserMessage.content);
       
-      // Update UI with AI response
+      // Get AI response
+      const aiResponse = await chatApi.getAIResponse(activeChat.id, tempUserMessage.content);
+      
+      // Replace temporary message with real messages
       const finalChat = {
-        ...updatedActiveChat,
-        messages: [...updatedActiveChat.messages, aiResponse],
+        ...activeChat,
+        messages: [...activeChat.messages.filter(m => !m.id.startsWith('temp-')), userMessage, aiResponse],
         lastUpdated: new Date(),
       };
       

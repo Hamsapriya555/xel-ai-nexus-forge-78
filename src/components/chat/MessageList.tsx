@@ -9,13 +9,11 @@ interface MessageListProps {
 }
 
 const MessageList: React.FC<MessageListProps> = ({ messages, isTyping }) => {
-  // Removed auto-scrolling effect
-  
   return (
     <div className="flex-1 overflow-y-auto p-4 pb-32">
-      {messages.map((message) => (
+      {messages.map((message, index) => (
         <div 
-          key={message.id}
+          key={`${message.id}-${index}`}
           className={`mb-8 ${message.role === 'user' ? 'ml-auto' : ''}`}
         >
           <div className="flex items-start">
