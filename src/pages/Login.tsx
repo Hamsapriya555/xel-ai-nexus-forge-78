@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import Button from '@/components/Button';
 import InputField from '@/components/InputField';
+import { auth } from '@/lib/api';
+import { toast } from 'sonner';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -52,12 +54,20 @@ const Login = () => {
     
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // Call dummy login API
+      const user = await auth.login(formData.email, formData.password);
+      console.log('User logged in:', user);
+      toast.success('Login successful!');
+      
       // Redirect to chat page after successful login
       navigate('/chat');
-    }, 1500);
+    } catch (error) {
+      console.error('Login failed:', error);
+      toast.error('Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -74,7 +84,7 @@ const Login = () => {
           <div className="text-center mb-8">
             <h1 className="text-3xl font-space-grotesk font-bold mb-2">Welcome back</h1>
             <p className="text-muted-foreground">
-              Sign in to your fake_by_Xel account
+              Sign in to your account
             </p>
           </div>
           

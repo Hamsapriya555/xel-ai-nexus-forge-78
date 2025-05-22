@@ -40,7 +40,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
           value={value}
           onChange={onChange}
           onKeyDown={handleKeyDown}
-          placeholder="Message fake_by_Xel..."
+          placeholder="Send a message..."
           className="w-full p-4 pr-12 bg-muted/50 border border-border rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary h-[60px] max-h-[200px]"
           rows={1}
           style={{
@@ -59,7 +59,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
       </div>
       <div className="max-w-3xl mx-auto mt-2 text-center">
         <p className="text-xs text-muted-foreground">
-          fake_by_Xel may produce inaccurate information about people, places, or facts.
+          AI responses may contain inaccuracies. Verify important information.
         </p>
       </div>
     </div>

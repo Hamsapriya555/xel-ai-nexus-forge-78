@@ -9,13 +9,8 @@ interface MessageListProps {
 }
 
 const MessageList: React.FC<MessageListProps> = ({ messages, isTyping }) => {
-  const messagesEndRef = React.useRef<HTMLDivElement>(null);
-
-  // Scroll to bottom whenever messages change
-  React.useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
+  // Removed auto-scrolling effect
+  
   return (
     <div className="flex-1 overflow-y-auto p-4 pb-32">
       {messages.map((message) => (
@@ -69,7 +64,6 @@ const MessageList: React.FC<MessageListProps> = ({ messages, isTyping }) => {
           </div>
         </div>
       )}
-      <div ref={messagesEndRef} />
     </div>
   );
 };

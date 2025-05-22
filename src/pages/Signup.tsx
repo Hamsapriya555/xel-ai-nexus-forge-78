@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import Button from '@/components/Button';
 import InputField from '@/components/InputField';
+import { auth } from '@/lib/api';
+import { toast } from 'sonner';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -69,12 +71,20 @@ const Signup = () => {
     
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // Call dummy signup API
+      const user = await auth.signup(formData.email, formData.password, formData.name);
+      console.log('User signed up:', user);
+      toast.success('Account created successfully!');
+      
       // Redirect to chat page after successful signup
       navigate('/chat');
-    }, 1500);
+    } catch (error) {
+      console.error('Signup failed:', error);
+      toast.error('Signup failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -91,7 +101,7 @@ const Signup = () => {
           <div className="text-center mb-8">
             <h1 className="text-3xl font-space-grotesk font-bold mb-2">Create an account</h1>
             <p className="text-muted-foreground">
-              Join fake_by_Xel and start exploring
+              Join and start exploring
             </p>
           </div>
           
